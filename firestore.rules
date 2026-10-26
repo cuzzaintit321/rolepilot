@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owner(uid) { return request.auth != null && request.auth.uid == uid; }
+    function validApplication(id) {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['id','company','jobTitle','status','postingUrl','salaryRange','location','applicationDate','deadline','followUpDate','notes','activityHistory','revision','updatedAt'])
+        && d.id == id && d.company is string && d.company.size() > 0 && d.company.size() <= 500
+        && d.jobTitle is string && d.jobTitle.size() > 0 && d.jobTitle.size() <= 500
+        && d.status in ['Saved','Applied','Assessment','Interview','Offer','Rejected','Withdrawn']
+        && d.postingUrl is string && d.postingUrl.size() <= 3000
+        && d.salaryRange is string && d.salaryRange.size() <= 500
+        && d.location is string && d.location.size() <= 500
+        && d.applicationDate is string && d.applicationDate.size() <= 10
+        && d.deadline is string && d.deadline.size() <= 10
+        && d.followUpDate is string && d.followUpDate.size() <= 10
+        && d.notes is string && d.notes.size() <= 20000
+        && d.activityHistory is list && d.activityHistory.size() <= 3000
+        && d.revision is int && d.updatedAt is string;
+    }
+    match /users/{uid}/applications/{id} {
+      allow read, delete: if owner(uid);
+      allow create: if owner(uid) && validApplication(id) && request.resource.data.revision == 1;
+      allow update: if owner(uid) && validApplication(id)
+        && request.resource.data.revision == resource.data.revision + 1
+        && request.resource.data.activityHistory.hasAll(resource.data.activityHistory);
+    }
+    match /users/{uid}/settings/preferences {
+      allow read: if owner(uid);
+      allow create, update: if owner(uid)
+        && request.resource.data.keys().hasOnly(['warningDays'])
+        && request.resource.data.warningDays is int
+        && request.resource.data.warningDays >= 0 && request.resource.data.warningDays <= 30;
+    }
+  }
+}

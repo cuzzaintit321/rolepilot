@@ -1,0 +1,3 @@
+import React from 'react';import {createRoot} from 'react-dom/client';import App from './App';import './styles.css';
+class ErrorBoundary extends React.Component<{children:React.ReactNode},{failed:boolean}>{state={failed:false};static getDerivedStateFromError(){return {failed:true};}render(){return this.state.failed?<div className="welcome-page"><div className="connection-card"><h2>The workspace couldn’t open.</h2><p>Reload the page and try again. Existing application records have not been cleared.</p><button className="primary-button" onClick={()=>location.reload()}>Reload</button></div></div>:this.props.children;}}
+createRoot(document.getElementById('root')!).render(<React.StrictMode><ErrorBoundary><App/></ErrorBoundary></React.StrictMode>);

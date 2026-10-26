@@ -1,0 +1,20 @@
+RolePilot — JASON EDWARDS
+
+1. Extract the ZIP.
+2. Open a terminal in the rolepilot folder.
+3. Run: bash start.sh
+4. Open: http://127.0.0.1:4173
+5. Choose “Use this browser” to start immediately.
+
+Requires Python 3 for the included prebuilt app.
+No account or API key is needed in browser-only mode.
+
+To edit the source (Node.js 22.13+):
+  npm ci
+  npm run dev
+
+To test and rebuild:
+  npm test
+  npm run build
+
+README.md contains the Google/Firebase setup and GitHub upload commands.
