@@ -1,3 +1,5 @@
+![RolePilot — A home for every opportunity](assets/rolepilot-cover.png)
+
 # RolePilot
 
 A focused workspace for your next career move. Track job applications, see approaching deadlines, record follow-ups, and keep a complete export of your data.
